@@ -9,14 +9,14 @@ from make_requests_fast.utils.ListReader import ListReader
 from make_requests_fast.requestors import Requestor
 
 
-class SequentialRequestor(Requestor):
+class MultiprocessThreadPoolRequestor(Requestor):
     """
     Getting the requests with a single thread.
 
     """
 
     def __init__(self, file):
-        super(SequentialRequestor, self).__init__(file)
+        super(MultiprocessThreadPoolRequestor, self).__init__(file)
 
     def execute(self):
         self.config_log()

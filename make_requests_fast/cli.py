@@ -6,7 +6,7 @@ from make_requests_fast.utils.ListReader import ListReader
 from make_requests_fast.requestors.BufferedChunkedThreadPoolRequestor import (
     BufferedChunkedThreadPoolRequestor,
 )
-
+from make_requests_fast.requestors.ChunkedProcessPoolRequestor import ChunkedProcessPoolRequestor
 from make_requests_fast.requestors.ChunkedThreadPoolRequestor import ChunkedThreadPoolRequestor
 from make_requests_fast.requestors.SequentialRequestor import SequentialRequestor
 
@@ -35,16 +35,30 @@ def run(
     We supply the type of pool concurrency and the full path of the file.
     """
     start_time = time.time()
-
+    log_file = ""
     if requestor == "ChunkedThreadPool":
-        ChunkedThreadPoolRequestor(file).execute()
+        ctpr = ChunkedThreadPoolRequestor(file)
+        ctpr.execute()
+        log_file = ctpr.log_path
+
     elif requestor == "Sequential":
-        SequentialRequestor(file).execute()
+        sr = SequentialRequestor(file)
+        sr.execute()
+        log_file = sr.log_path
+
     elif requestor == "BufferedChunkedThreadPool":
-        BufferedChunkedThreadPoolRequestor(file).execute()
+        bctpr = BufferedChunkedThreadPoolRequestor(file)
+        bctpr.execute()
+        log_file = bctpr.log_path
+
+    elif requestor == "ChunkedProcessPool":
+        cppr = ChunkedProcessPoolRequestor(file)
+        cppr.execute()
+        log_file = cppr.log_path
 
     typer.echo(f"\nExecuted {requestor} with {file}")
-    typer.echo(f"--- %s seconds ---" % (time.time() - start_time))
+    typer.echo(f"Log - {log_file}")
+    typer.echo(f"---- %s seconds ----" % (time.time() - start_time))
 
 
 def main():

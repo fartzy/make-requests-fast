@@ -1,4 +1,5 @@
 from datetime import datetime
+import itertools
 import logging
 import logging.handlers
 import os
@@ -28,23 +29,32 @@ class Requestor(object):
         with urllib.request.urlopen(url, timeout=timeout) as conn:
             return conn.read()
 
-    def get_log_path(self):
+    def create_log_path(self, logging_dir=config.LOGGING_DIR):
         now = datetime.now()
         date_time = now.strftime("%Y-%m-%d_%H-%M-%S")
         filename = f"output_{date_time}.log"
 
-        log_path = os.path.join(config.LOGGING_DIR, filename)
+        log_path = os.path.join(logging_dir, filename)
+        self.log_path = log_path
         return log_path
 
-    def config_logger(self):
+    def config_log(self):
 
         handler = logging.handlers.WatchedFileHandler(
-            os.environ.get("LOGFILE", self.get_log_path())
+            os.environ.get("LOGFILE", self.create_log_path())
         )
         formatter = logging.Formatter(logging.BASIC_FORMAT)
         handler.setFormatter(formatter)
         self.log.setLevel(os.environ.get("LOGLEVEL", "INFO"))
         self.log.addHandler(handler)
+
+    def chunked_iterable(self, iterable, size):
+        it = iter(iterable)
+        while True:
+            chunk = tuple(itertools.islice(it, size))
+            if not chunk:
+                break
+            yield chunk
 
     # TODO: Check details of the last run
     @staticmethod

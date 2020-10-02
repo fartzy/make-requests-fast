@@ -1,5 +1,6 @@
 import concurrent.futures
 import itertools
+import multiprocessing
 import time
 import os
 import urllib.request
@@ -9,24 +10,26 @@ from make_requests_fast.utils.ListReader import ListReader
 from make_requests_fast.requestors import Requestor
 
 
-class ChunkedThreadPoolRequestor(Requestor):
+class ChunkedProcessPoolRequestor(Requestor):
     """
-    Getting the requests using the ThreadPoolExecutor and giving it chunks of size CHUNK_SIZE.
+    Getting the requests with a single thread.
 
     """
 
     def __init__(self, file):
-        super(ChunkedThreadPoolRequestor, self).__init__(file)
+        super(ChunkedProcessPoolRequestor, self).__init__(file)
+        self.max_workers = self._get_cpu_count()
 
-        self.chunk_size = int(config.CHUNK_SIZE)
+    def _get_cpu_count(self):
+        return multiprocessing.cpu_count()
 
     def execute(self):
         self.config_log()
 
-        for url_chunk in self.chunked_iterable(self.urls, self.chunk_size):
-            with concurrent.futures.ThreadPoolExecutor() as executor:
+        for url_chunk in self.chunked_iterable(self.urls, self.max_workers):
+            with concurrent.futures.ProcessPoolExecutor(max_workers=self.max_workers) as executor:
                 futures = {
-                    executor.submit(self.load_url, task, self.timeout_seconds) for task in url_chunk
+                    executor.submit(self.load_url, url, self.timeout_seconds) for url in url_chunk
                 }
 
                 for fut in concurrent.futures.as_completed(futures):

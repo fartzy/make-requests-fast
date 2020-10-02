@@ -26,12 +26,14 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
 
     @dispatch(object, int, object)
     def load_url(self, url, timeout, url_list):
-        url_list.remove(url)
+        if url in url_list:
+            url_list.remove(url)
+
         with urllib.request.urlopen(url, timeout=timeout) as conn:
-            return (url, conn.read())
+            return conn.read()
 
     def execute(self):
-        self.config_logger()
+        self.config_log()
 
         urls_left = self.urls
 

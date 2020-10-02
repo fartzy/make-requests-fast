@@ -4,10 +4,10 @@
 
 ### Requestors
 Each Requestor uses a different way to parallelize http requests (excpet for ther sequential one which is not parallelized )
-#### BufferedChunkedThreadPoolRequestor
-#### ChunkedProcessPoolRequestor
-#### ChunkedThreadPoolRequestor
-#### SequentialRequestor
+* BufferedChunkedThreadPoolRequestor
+* ChunkedProcessPoolRequestor
+* ChunkedThreadPoolRequestor
+* SequentialRequestor
 
 
 ### Poetry usage 

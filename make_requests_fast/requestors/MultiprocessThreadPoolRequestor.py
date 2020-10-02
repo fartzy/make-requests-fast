@@ -1,4 +1,5 @@
 import concurrent.futures
+import multiprocessing as mp
 import itertools
 import time
 import os
@@ -24,9 +25,3 @@ class MultiprocessThreadPoolRequestor(Requestor):
         for url in self.urls:
             html = self.load_url(url, self.timeout_seconds)
             self.log.info(f"The outcome is {html}\n")
-
-
-# if __name__ == "__main__":
-#     start_time = time.time()
-#     execute()
-#     print("--- %s seconds ---" % (time.time() - start_time))

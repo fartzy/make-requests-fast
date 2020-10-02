@@ -61,9 +61,3 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
                     futures.add(
                         executor.submit(self.load_url, url, self.timeout_seconds, urls_left)
                     )
-
-
-# if __name__ == "__main__":
-#     start_time = time.time()
-#     ChunkedLoopedThreadPoolRequestor("dummyfile").execute()
-#     print("--- %s seconds ---" % (time.time() - start_time))

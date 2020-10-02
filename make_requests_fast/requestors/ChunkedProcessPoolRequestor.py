@@ -34,9 +34,3 @@ class ChunkedProcessPoolRequestor(Requestor):
 
                 for fut in concurrent.futures.as_completed(futures):
                     self.log.info(f"The outcome is {fut.result()}\n")
-
-
-# if __name__ == "__main__":
-#     start_time = time.time()
-#     execute()
-#     print("--- %s seconds ---" % (time.time() - start_time))

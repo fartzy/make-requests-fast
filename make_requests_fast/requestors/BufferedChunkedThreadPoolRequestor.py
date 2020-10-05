@@ -24,25 +24,26 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
 
         self.chunk_size = int(config.CHUNK_SIZE)
 
-    @dispatch(object, int, object)
-    def load_url(self, url, timeout, url_list):
-        if url in url_list:
-            url_list.remove(url)
+    # Not needed, just changing the list to an iterator to save the state of the iteration
+    # @dispatch(object, int, object)
+    # def load_url(self, url, timeout, url_list):
+    #     if url in url_list:
+    #         url_list.remove(url)
 
-        with urllib.request.urlopen(url, timeout=timeout) as conn:
-            return conn.read()
+    #     with urllib.request.urlopen(url, timeout=timeout) as conn:
+    #         return conn.read()
 
     def execute(self):
         self.config_log()
 
-        urls_left = self.urls
+        urls_left = iter(self.urls)
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
 
             # Schedule the first N futures.  We don't want to schedule them all
             # at once, to avoid consuming excessive amounts of memory.
             futures = {
-                executor.submit(self.load_url, url, self.timeout_seconds, urls_left)
+                executor.submit(self.load_url, url, self.timeout_seconds)
                 for url in itertools.islice(urls_left, self.chunk_size)
             }
 
@@ -58,6 +59,4 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
                 # Schedule the next set of futures.  We don't want more than N futures
                 # in the pool at a time, to keep memory consumption down.
                 for url in itertools.islice(urls_left, len(done)):
-                    futures.add(
-                        executor.submit(self.load_url, url, self.timeout_seconds, urls_left)
-                    )
+                    futures.add(executor.submit(self.load_url, url, self.timeout_seconds))

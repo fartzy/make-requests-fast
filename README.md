@@ -20,6 +20,9 @@ Create a new python environment with Poetry for this project
 Install the dependencies for this project using Poetry 
    > poetry install 
 
+Start the poetry shell 
+   > poetry shell 
+
 ## Run 
 * This project uses the typer module. To execute a type of Requestor, give the name of the file and the type of requestor, without "Requestor". Only the abosulte path has been tested. 
 * Examples: 

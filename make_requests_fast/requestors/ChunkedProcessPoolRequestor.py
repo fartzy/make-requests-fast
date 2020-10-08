@@ -12,7 +12,7 @@ from make_requests_fast.requestors import Requestor
 
 class ChunkedProcessPoolRequestor(Requestor):
     """
-    Getting the requests with a single thread.
+    Getting the requests with a ProcessPoolExecutor.
 
     """
 

@@ -34,7 +34,7 @@ Start the poetry shell
     > 
     >  mrf -r ChunkedProcessPool -f /path/to/make-requests-fast/make_requests_fast/resources/urls.csv 
     > 
-    >  mrf -r ChunkedProcessPool -f /path/to/make-requests-fast/make_requests_fast/resources/urls.csv 
+    >  mrf -r Aiohttp -f /path/to/make-requests-fast/make_requests_fast/resources/urls.csv 
 
 
 ### Requestors

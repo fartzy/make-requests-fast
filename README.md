@@ -38,7 +38,7 @@ Start the poetry shell
 
 
 ### Requestors
-Each Requestor uses a different way to parallelize http requests (excpet for ther sequential one which is not parallelized )
+Each Requestor uses a different way to parallelize http requests ( except for SequentialRequestor one which does not parallelize )
 * SequentialRequestor
    * All requests are issued sequentially 
 * ChunkedThreadPoolRequestor

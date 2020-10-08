@@ -33,28 +33,35 @@ Start the poetry shell
     >  mrf -r Sequential -f /path/to/make-requests-fast/make_requests_fast/resources/urls.csv 
     > 
     >  mrf -r ChunkedProcessPool -f /path/to/make-requests-fast/make_requests_fast/resources/urls.csv 
+    > 
+    >  mrf -r ChunkedProcessPool -f /path/to/make-requests-fast/make_requests_fast/resources/urls.csv 
 
 
 ### Requestors
 Each Requestor uses a different way to parallelize http requests (excpet for ther sequential one which is not parallelized )
 * SequentialRequestor
-   - All requests are issued sequentially 
+   * All requests are issued sequentially 
 * ChunkedThreadPoolRequestor
-   - Uses ThreadPoolExecutor from concurrent.futures
-   - The futures are all returned when the whole chunk is done
-   - A new chunk of futures is scheduled 
-   - Since the GIL is released, this can improve upon sequential 
+   * Uses ThreadPoolExecutor from concurrent.futures
+   * The futures are all returned when the whole chunk is done
+   * A new chunk of futures is scheduled 
+   * Since the GIL is released, this can improve upon sequential 
 * BufferedChunkedThreadPoolRequestor
-   - Uses ThreadPoolExecutor from concurrent.futures 
-   - Each individual future is returned as soon as it is done
-   - The program stays in a loop while and futures are not done
-   - New future(s) are scheduled as they finish, up to the chunk size amount
-   - Since the GIL is released, this can improve upon sequential 
+   * Uses ThreadPoolExecutor from concurrent.futures 
+   * Each individual future is returned as soon as it is done
+   * The program stays in a loop while and futures are not done
+   * New future(s) are scheduled as they finish, up to the chunk size amount
+   * Since the GIL is released, this can improve upon sequential
 * ChunkedProcessPoolRequestor
-   - Uses ProcessPoolExecutor from concurrent.futures 
-   - The futures are all returned when the whole chunk is done
-   - A new chunk of futures is scheduled 
+   * Uses ProcessPoolExecutor from concurrent.futures 
+   * The futures are all returned when the whole chunk is done
+   * A new chunk of futures is scheduled 
+* AiohttpRequestor 
+   * Uses aiohttp which uses asycnio 
+   * Not currently using the speedup libraries (Will add them in future)
+      - cchardet, aiodns, brotlipy
+   * Creates and event loop and adds tasks to the event loop 
+   * Each task is a coroutine which executes an individual http request
 * MultiprocessThreadPoolRequestor
-* AsyncioRequestor 
 
 

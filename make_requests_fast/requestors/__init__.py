@@ -26,8 +26,9 @@ class Requestor(object):
         pass
 
     def load_url(self, url, timeout):
+        print(url)
         with urllib.request.urlopen(url, timeout=timeout) as conn:
-            return conn.read()
+            return (url, conn.read())
 
     def create_log_path(self, logging_dir=config.LOGGING_DIR):
         now = datetime.now()

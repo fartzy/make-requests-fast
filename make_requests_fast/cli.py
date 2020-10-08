@@ -3,6 +3,7 @@ import time
 import typer
 
 from make_requests_fast.utils.ListReader import ListReader
+from make_requests_fast.requestors.AiohttpRequestor import AiohttpRequestor
 from make_requests_fast.requestors.BufferedChunkedThreadPoolRequestor import (
     BufferedChunkedThreadPoolRequestor,
 )
@@ -63,6 +64,11 @@ def run(
         mtpr = MultiprocessThreadPoolRequestor(file)
         mtpr.execute()
         log_file = mtpr.log_path
+
+    elif requestor == "Aiohttp":
+        aioh = AiohttpRequestor(file)
+        aioh.execute()
+        log_file = aioh.log_path
 
     typer.echo(f"\nExecuted {requestor} with {file}")
     typer.echo(f"Log - {log_file}")

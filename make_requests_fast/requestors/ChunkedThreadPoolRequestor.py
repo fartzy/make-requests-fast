@@ -30,4 +30,4 @@ class ChunkedThreadPoolRequestor(Requestor):
                 }
 
                 for fut in concurrent.futures.as_completed(futures):
-                    self.log.info(f"The outcome is {fut.result()}\n")
+                    self.log.info(f"The outcome of {fut.result()[0]} is {fut.result()[1]}\n")

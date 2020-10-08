@@ -54,7 +54,7 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
                 )
 
                 for fut in done:
-                    self.log.info(f"The outcome is {fut.result()}\n")
+                    self.log.info(f"The outcome of {fut.result()[0]} is {fut.result()[1]}\n")
 
                 # Schedule the next set of futures.  We don't want more than N futures
                 # in the pool at a time, to keep memory consumption down.

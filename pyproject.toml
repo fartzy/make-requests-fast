@@ -9,9 +9,18 @@ python = "^3.6"
 setuptools = "^50.3.0"
 typer = "^0.3.2"
 multipledispatch = "^0.6.0"
+aiohttp = "^3.6.2"
+python-pydebug = "^0.6.0"
+debugpy = "1.0.0rc2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"
+
+[tool.poetry.extras]
+aiodns = ["aiohttp"]
+brotlipy = ["aiohttp"]
+cchardet = ["aiohttp"]
+
 
 [tool.poetry.scripts]
 mrf = "make_requests_fast.cli:main"

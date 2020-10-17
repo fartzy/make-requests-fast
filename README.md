@@ -4,8 +4,9 @@
 
 
 ## Install Poetry
-This project uses Poetry version 1.1.0rc1.  
-   > python get-poetry.py --version 1.1.0
+This project uses Poetry version 1.1.0rc1.  The latest at this time is 1.1.3 so just use that.
+   > pip install --user poetry
+   > poetry self update 1.1.3
 
 Poetry is a tool that makes dependency managmeent cleaner and packaging easier.  [Poetry documentation](https://python-poetry.org/docs/)
 

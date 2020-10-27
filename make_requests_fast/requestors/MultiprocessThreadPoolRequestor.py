@@ -11,6 +11,7 @@ from make_requests_fast.requestors import Requestor
 
 
 class MultiprocessThreadPoolRequestor(Requestor):
+    #TODO - Implement a a processpool which uses multiple threads for each process     
     """
     Getting the requests with a single thread.
 
@@ -24,4 +25,4 @@ class MultiprocessThreadPoolRequestor(Requestor):
 
         for url in self.urls:
             html = self.load_url(url, self.timeout_seconds)
-            self.log.info(f"The outcome of {fut.result()[0]} is {fut.result()[1]}\n")
+            self.log.info(f"The outcome of {html[0]} is {html[1]}\n")

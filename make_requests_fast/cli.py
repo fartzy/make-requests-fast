@@ -1,3 +1,4 @@
+import os
 import time
 
 import typer
@@ -20,14 +21,14 @@ app = typer.Typer()
 @app.command("run")
 def run(
     requestor: str = typer.Option(
-        "ChunkedThreadPool",
+        "all",
         "-r",
         "--requestor",
         help="type of requestor pool to use",
         show_default=True,
     ),
     file: str = typer.Option(
-        "/Users/michaelartz/dev/python/make-requests-fast/make_requests_fast/resources/urls.csv",
+        f"{os.getcwd()}/make_requests_fast/resources/urls.csv",
         "-f",
         "--file",
         help="full path of file with urls",
@@ -70,10 +71,42 @@ def run(
         aioh.execute()
         log_file = aioh.log_path
 
+    elif requestor == "all":
+        start_time = time.time()
+        aioh = AiohttpRequestor(file)
+        aioh.execute()
+        print_out("Aiohttp", file, aioh.log_path, start_time)
+
+        start_time = time.time()
+        bctpr = BufferedChunkedThreadPoolRequestor(file)
+        bctpr.execute()
+        print_out("BufferedChunkedThreadPool", file, bctpr.log_path, start_time)
+
+        start_time = time.time()
+        cppr = ChunkedProcessPoolRequestor(file)
+        cppr.execute()
+        print_out("ChunkedProcessPool", file, cppr.log_path, start_time)
+
+        start_time = time.time()
+        mtpr = MultiprocessThreadPoolRequestor(file)
+        mtpr.execute()
+        print_out("MultiprocessThreadPool", file, mtpr.log_path, start_time)
+
+        start_time = time.time()
+        ctpr = ChunkedThreadPoolRequestor(file)
+        ctpr.execute()
+        print_out("ChunkedThreadPool", file, ctpr.log_path, start_time)
+
+        start_time = time.time()
+        sr = SequentialRequestor(file)
+        sr.execute()
+        print_out("Sequential", file, sr.log_path, start_time)
+
+
+def print_out(requestor, file, log_file, start_time):
     typer.echo(f"\nExecuted {requestor} with {file}")
     typer.echo(f"Log - {log_file}")
-    typer.echo(f"---- %s seconds ----" % (time.time() - start_time))
-
+    typer.echo(f"---- %s seconds ----" % (round((time.time() - start_time), 3)))
 
 def main():
     app()

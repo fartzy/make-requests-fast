@@ -23,4 +23,4 @@ class SequentialRequestor(Requestor):
 
         for url in self.urls:
             html = self.load_url(url, self.timeout_seconds)
-            self.log.info(f"The outcome of {fut.result()[0]} is {fut.result()[1]}\n")
+            self.log.info(f"The outcome of {html[0]} is {html[1]}\n")

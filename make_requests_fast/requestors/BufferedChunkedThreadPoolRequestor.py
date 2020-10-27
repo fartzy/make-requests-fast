@@ -24,6 +24,13 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
 
         self.chunk_size = int(config.CHUNK_SIZE)
 
+        self.client_exceptions = (
+            urllib.error.URLError,
+            TimeoutError,
+            urllib.error.HTTPError,
+            urllib.error.ContentTooShortError,
+        )
+
     # Not needed, just changing the list to an iterator to save the state of the iteration
     # @dispatch(object, int, object)
     # def load_url(self, url, timeout, url_list):
@@ -54,7 +61,10 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
                 )
 
                 for fut in done:
-                    self.log.info(f"The outcome of {fut.result()[0]} is {fut.result()[1]}\n")
+                    try:
+                        self.log.info(f"The outcome of {fut.result()[0]} is {fut.result()[1]}\n")
+                    except client_exceptions as e:
+                        self.log.error(e)
 
                 # Schedule the next set of futures.  We don't want more than N futures
                 # in the pool at a time, to keep memory consumption down.

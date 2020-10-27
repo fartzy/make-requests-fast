@@ -1,5 +1,6 @@
 import concurrent.futures
 import itertools
+import sys
 import time
 import os
 import urllib.request
@@ -23,4 +24,5 @@ class SequentialRequestor(Requestor):
 
         for url in self.urls:
             html = self.load_url(url, self.timeout_seconds)
-            self.log.info(f"The outcome of {html[0]} is {html[1]}\n")
+            html_size = sys.getsizeof(html[1])
+            self.log.info(f"The outcome of {html[0]} is {html_size} bytes\n")

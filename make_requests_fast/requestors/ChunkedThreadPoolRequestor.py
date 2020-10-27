@@ -1,5 +1,6 @@
 import concurrent.futures
 import itertools
+import sys
 import time
 import os
 import urllib.request
@@ -30,4 +31,5 @@ class ChunkedThreadPoolRequestor(Requestor):
                 }
 
                 for fut in concurrent.futures.as_completed(futures):
-                    self.log.info(f"The outcome of {fut.result()[0]} is {fut.result()[1]}\n")
+                    html_size = sys.getsizeof(fut.result()[1]) 
+                    self.log.info(f"The outcome of {fut.result()[0]} is {html_size} bytes\n")

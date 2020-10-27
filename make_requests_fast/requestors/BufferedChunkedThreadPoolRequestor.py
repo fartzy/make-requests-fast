@@ -3,6 +3,7 @@ import itertools
 import logging
 import logging.handlers
 from multipledispatch import dispatch
+import sys
 import time
 import os
 import urllib.request
@@ -62,7 +63,8 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
 
                 for fut in done:
                     try:
-                        self.log.info(f"The outcome of {fut.result()[0]} is {fut.result()[1]}\n")
+                        html_size = sys.getsizeof(fut.result()[1])
+                        self.log.info(f"The outcome of {fut.result()[0]} is {html_size} bytes\n")
                     except client_exceptions as e:
                         self.log.error(e)
 

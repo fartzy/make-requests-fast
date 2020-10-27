@@ -3,6 +3,7 @@ import itertools
 import logging
 import logging.handlers
 import os
+import time
 import urllib.request
 
 from make_requests_fast.utils.ListReader import ListReader
@@ -15,7 +16,7 @@ class Requestor(object):
         self.urls = ListReader.read(self.file)
         self.timeout_seconds = int(config.TIMEOUT_SECONDS)
         self.log = logging.getLogger()
-        
+
         self.client_exceptions = (
             urllib.error.URLError,
             TimeoutError,
@@ -33,7 +34,10 @@ class Requestor(object):
         """
         pass
 
-    
+    def log_error(self, e):
+         self.log.error(e)
+
+
     def initiate_log(self):
         self.log.info("Beginning requestor {req}... ".format(req=type(self)))
 
@@ -67,7 +71,9 @@ class Requestor(object):
         handler = logging.handlers.WatchedFileHandler(
             os.environ.get("LOGFILE", self.create_log_path())
         )
-        formatter = logging.Formatter(logging.BASIC_FORMAT)
+
+        formatter = logging.Formatter("%(asctime)s,%(levelname)s,%(message)s",
+                              "%Y-%m-%d %H:%M:%S")
         handler.setFormatter(formatter)
         self.log.setLevel(os.environ.get("LOGLEVEL", "INFO"))
         self.log.addHandler(handler)

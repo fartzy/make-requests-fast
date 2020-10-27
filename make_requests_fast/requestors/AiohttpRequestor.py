@@ -60,7 +60,8 @@ class AiohttpRequestor(Requestor):
                     tasks.append(self.load_url(session, url, self.timeout_seconds))
                 htmls = await asyncio.gather(*tasks)
                 for html in htmls:
-                    self.log.info(f"The outcome of {html[1]} is {html[0]}\n")
+                    html_size = sys.getsizeof(html[0])
+                    self.log.info(f"The outcome of {html[1]} is {html_size} bytes\n")
         except self.client_exceptions as e:
             self.log.error(e)
 

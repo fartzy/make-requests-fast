@@ -31,5 +31,8 @@ class ChunkedThreadPoolRequestor(Requestor):
                 }
 
                 for fut in concurrent.futures.as_completed(futures):
-                    html_size = sys.getsizeof(fut.result()[1]) 
-                    self.log.info(f"The outcome of {fut.result()[0]} is {html_size} bytes\n")
+                    try:
+                        html_size = sys.getsizeof(fut.result()[1]) 
+                        self.log.info(f"The outcome of {fut.result()[0]} is {html_size} bytes\n")
+                    except self.client_exceptions as e:
+                        self.log_error(e)

@@ -37,10 +37,6 @@ class Requestor(object):
     def log_error(self, e):
          self.log.error(e)
 
-
-    def initiate_log(self):
-        self.log.info("Beginning requestor {req}... ".format(req=type(self)))
-
     def initiate_log(self):
         self.log.info("Beginning requestor {req}... ".format(req=type(self)))
     

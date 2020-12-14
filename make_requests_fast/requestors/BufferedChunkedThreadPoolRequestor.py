@@ -65,7 +65,7 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
                     try:
                         html_size = sys.getsizeof(fut.result()[1])
                         self.log.info(f"The outcome of {fut.result()[0]} is {html_size} bytes\n")
-                    except client_exceptions as e:
+                    except self.client_exceptions as e:
                         self.log.error(e)
 
                 # Schedule the next set of futures.  We don't want more than N futures

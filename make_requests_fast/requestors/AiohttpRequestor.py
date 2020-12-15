@@ -1,5 +1,6 @@
 import asyncio
 import itertools
+import inspect
 import logging
 import logging.handlers
 import os
@@ -9,6 +10,7 @@ import urllib.request
 
 import aiohttp
 from multipledispatch import dispatch
+from tenacity import retry, stop_after_attempt
 
 from make_requests_fast.configuration import config
 from make_requests_fast.utils.ListReader import ListReader
@@ -33,6 +35,7 @@ class AiohttpRequestor(Requestor):
             aiohttp.ServerDisconnectedError,
         )
 
+    #@retry(stop=stop_after_attempt(5))
     @dispatch(object, object, int)
     async def load_url(self, session, url, timeout):
         self.log.info(f"Beginning request of {url}")
@@ -52,6 +55,15 @@ class AiohttpRequestor(Requestor):
     #     print("Shutting down...")
     #     asyncio.create_task(self._shutdown(loop))    
 
+    @staticmethod
+    def _get_client_exceptions():
+        return (
+            aiohttp.ClientResponseError,
+            aiohttp.ClientConnectionError,
+            aiohttp.ClientPayloadError,
+            aiohttp.ServerDisconnectedError,
+        )
+
     async def _execute(self):
         tasks = []
         try:
@@ -61,7 +73,7 @@ class AiohttpRequestor(Requestor):
                 htmls = await asyncio.gather(*tasks)
                 for html in htmls:
                     html_size = sys.getsizeof(html[0])
-                    self.log.info(f"The outcome of {html[1]} is {html_size} bytes\n")
+                    self.log.info(f"{html[1]}, SUCCESS, {html_size} bytes")
         except self.client_exceptions as e:
             self.log.error(e)
 

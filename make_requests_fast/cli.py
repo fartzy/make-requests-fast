@@ -5,6 +5,7 @@ import typer
 
 from make_requests_fast.utils.ListReader import ListReader
 from make_requests_fast.requestors.AiohttpRequestor import AiohttpRequestor
+from make_requests_fast.requestors.DaskStreamzRequestor import DaskStreamzRequestor
 from make_requests_fast.requestors.BufferedChunkedThreadPoolRequestor import (
     BufferedChunkedThreadPoolRequestor,
 )
@@ -44,32 +45,34 @@ def run(
     if requestor == "ChunkedThreadPool":
         ctpr = ChunkedThreadPoolRequestor(file)
         ctpr.execute()
-        log_file = ctpr.log_path
+        print_out("ChunkedThreadPool", file, ctpr.log_path, start_time)
 
     elif requestor == "Sequential":
         sr = SequentialRequestor(file)
         sr.execute()
-        log_file = sr.log_path
+        print_out("Sequential", file, sr.log_path, start_time)
 
     elif requestor == "BufferedChunkedThreadPool":
         bctpr = BufferedChunkedThreadPoolRequestor(file)
         bctpr.execute()
-        log_file = bctpr.log_path
+        print_out("BufferedChunkedThreadPool", file, bctpr.log_path, start_time)
 
     elif requestor == "ChunkedProcessPool":
         cppr = ChunkedProcessPoolRequestor(file)
         cppr.execute()
-        log_file = cppr.log_path
+        print_out("ChunkedProcessPool", file, cppr.log_path, start_time)
 
-    elif requestor == "MultiprocessThreadPool":
-        mtpr = MultiprocessThreadPoolRequestor(file)
-        mtpr.execute()
-        log_file = mtpr.log_path
+    # TODO: Implement MultiprocessThreadPoolRequestor
+    # elif requestor == "MultiprocessThreadPool":
+    #     mtpr = MultiprocessThreadPoolRequestor(file)
+    #     mtpr.execute()
+    #     print_out("MultiprocessThreadPool", file, mtpr.log_path, start_time)
 
     elif requestor == "Aiohttp":
         aioh = AiohttpRequestor(file)
         aioh.execute()
-        log_file = aioh.log_path
+        print_out("Aiohttp", file, aioh.log_path, start_time)
+
 
     elif requestor == "all":
         start_time = time.time()
@@ -83,14 +86,20 @@ def run(
         print_out("BufferedChunkedThreadPool", file, bctpr.log_path, start_time)
 
         start_time = time.time()
+        dsr = DaskStreamzRequestor(file)
+        dsr.execute()
+        print_out("DaskStreamz", file, dsr.log_path, start_time)
+
+        start_time = time.time()
         cppr = ChunkedProcessPoolRequestor(file)
         cppr.execute()
         print_out("ChunkedProcessPool", file, cppr.log_path, start_time)
 
-        start_time = time.time()
-        mtpr = MultiprocessThreadPoolRequestor(file)
-        mtpr.execute()
-        print_out("MultiprocessThreadPool", file, mtpr.log_path, start_time)
+        # TODO: Implement MultiprocessThreadPoolRequestor
+        # start_time = time.time()
+        # mtpr = MultiprocessThreadPoolRequestor(file)
+        # mtpr.execute()
+        # print_out("MultiprocessThreadPool", file, mtpr.log_path, start_time)
 
         start_time = time.time()
         ctpr = ChunkedThreadPoolRequestor(file)

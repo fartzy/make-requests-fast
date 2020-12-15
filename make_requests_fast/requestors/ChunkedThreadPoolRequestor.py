@@ -29,10 +29,12 @@ class ChunkedThreadPoolRequestor(Requestor):
                 futures = {
                     executor.submit(self.load_url, task, self.timeout_seconds) for task in url_chunk
                 }
-
+                
+                url = ""
                 for fut in concurrent.futures.as_completed(futures):
                     try:
-                        html_size = sys.getsizeof(fut.result()[1]) 
-                        self.log.info(f"The outcome of {fut.result()[0]} is {html_size} bytes\n")
+                        html_size = sys.getsizeof(fut.result()[1])
+                        url = fut.result()[0] 
+                        self.log.info(f"{url}, SUCCESS, {html_size}")
                     except self.client_exceptions as e:
-                        self.log_error(e)
+                        self.log_error(e, url)

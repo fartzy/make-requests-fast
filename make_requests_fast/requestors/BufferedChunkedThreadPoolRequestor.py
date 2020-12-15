@@ -25,13 +25,6 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
 
         self.chunk_size = int(config.CHUNK_SIZE)
 
-        self.client_exceptions = (
-            urllib.error.URLError,
-            TimeoutError,
-            urllib.error.HTTPError,
-            urllib.error.ContentTooShortError,
-        )
-
     # Not needed, just changing the list to an iterator to save the state of the iteration
     # @dispatch(object, int, object)
     # def load_url(self, url, timeout, url_list):
@@ -64,7 +57,7 @@ class BufferedChunkedThreadPoolRequestor(Requestor):
                 for fut in done:
                     try:
                         html_size = sys.getsizeof(fut.result()[1])
-                        self.log.info(f"The outcome of {fut.result()[0]} is {html_size} bytes\n")
+                        self.log.info(f"{fut.result()[0]}, SUCCESS, {html_size}")
                     except self.client_exceptions as e:
                         self.log.error(e)
 

@@ -3,8 +3,16 @@ import itertools
 import logging
 import logging.handlers
 import os
+import re
 import time
 import urllib.request
+
+from tenacity import (
+    retry, 
+    stop_after_attempt, 
+    retry_if_exception_type,
+    RetryError
+)
 
 from make_requests_fast.utils.ListReader import ListReader
 from make_requests_fast.configuration import config
@@ -22,6 +30,9 @@ class Requestor(object):
             TimeoutError,
             urllib.error.HTTPError,
             urllib.error.ContentTooShortError,
+            RetryError,
+            TypeError,
+            OSError
         )
         
 
@@ -34,18 +45,30 @@ class Requestor(object):
         """
         pass
 
-    def log_error(self, e):
-         self.log.error(e)
+    def log_error(self, e, url):
+         self.log.error(f"{url}, {e}")
 
-    def initiate_log(self):
-        self.log.info("Beginning requestor {req}... ".format(req=type(self)))
-    
+    def _get_requestor(self):
+        m = re.match("^.*[.](\w+).*$", str(type(self)))
+        req = m.groups()[0]
+        return req
+
+    def _initiate_log(self):
+        self.log.info("Beginning requestor {req}... ".format(req=self._get_requestor()))
+
+    @retry(stop=stop_after_attempt(5), retry=retry_if_exception_type((
+            urllib.error.URLError,
+            TimeoutError,
+            urllib.error.HTTPError,
+            urllib.error.ContentTooShortError,
+            OSError
+        )))
     def load_url(self, url, timeout):
         self.log.info(f"Requesting {url}...")
         with urllib.request.urlopen(url, timeout=timeout) as conn:
             return (url, conn.read())
 
-    def make_logging_dir(self, logging_dir=config.LOGGING_DIR):
+    def _make_logging_dir(self, logging_dir=config.LOGGING_DIR):
         is_exist = os.path.exists(logging_dir)
 
         if not is_exist:
@@ -54,9 +77,11 @@ class Requestor(object):
     def create_log_path(self, logging_dir=config.LOGGING_DIR):
         now = datetime.now()
         date_time = now.strftime("%Y-%m-%d_%H-%M-%S")
-        filename = f"output_{date_time}.log"
 
-        self.make_logging_dir(logging_dir)
+        req = self._get_requestor()
+        filename = f"output_{date_time}_{req}.log"
+
+        self._make_logging_dir(logging_dir)
 
         log_path = os.path.join(logging_dir, filename)
         self.log_path = log_path
@@ -73,7 +98,7 @@ class Requestor(object):
         handler.setFormatter(formatter)
         self.log.setLevel(os.environ.get("LOGLEVEL", "INFO"))
         self.log.addHandler(handler)
-        self.initiate_log()
+        self._initiate_log()
 
     def chunked_iterable(self, iterable, size):
         it = iter(iterable)

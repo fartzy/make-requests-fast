@@ -6,6 +6,8 @@ import time
 import os
 import urllib.request
 
+from tenacity import retry, stop_after_attempt
+
 from make_requests_fast.configuration import config
 from make_requests_fast.utils.ListReader import ListReader
 from make_requests_fast.requestors import Requestor
@@ -21,20 +23,8 @@ class ChunkedProcessPoolRequestor(Requestor):
         super(ChunkedProcessPoolRequestor, self).__init__(file)
         self.max_workers = self._get_cpu_count()
 
-        self.client_exceptions = (
-            urllib.error.URLError,
-            TimeoutError,
-            urllib.error.HTTPError,
-            urllib.error.ContentTooShortError,
-        )
-
     def _get_cpu_count(self):
         return multiprocessing.cpu_count()
-
-    def load_url(self, url, timeout):
-        self.log.info(f"Requesting {url}...")
-        with urllib.request.urlopen(url, timeout=timeout) as conn:
-            return (url, conn.read())
             
     def execute(self):
         self.config_log()
@@ -45,9 +35,11 @@ class ChunkedProcessPoolRequestor(Requestor):
                     executor.submit(self.load_url, url, self.timeout_seconds) for url in url_chunk
                 }
 
+                url = ""
                 for fut in concurrent.futures.as_completed(futures):
                     try:
                         html_size = sys.getsizeof(fut.result()[1])
-                        self.log.info(f"The outcome of {fut.result()[0]} is {html_size} bytes\n")
+                        url = fut.result()[0] 
+                        self.log.info(f"{url}, SUCCESS, {html_size}")
                     except self.client_exceptions as e:
-                        self.log_error(e)
+                        self.log_error(e, url)

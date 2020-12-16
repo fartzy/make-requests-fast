@@ -63,6 +63,11 @@ Each Requestor uses a different way to parallelize http requests ( except for Se
       - cchardet, aiodns, brotlipy
    * Creates and event loop and adds tasks to the event loop 
    * Each task is a coroutine which executes an individual http request
-* MultiprocessThreadPoolRequestor
+* DaskStreamzRequestor
+   * Uses streamz reactive API 
+   * `scatter()` causes the stream to be distributed to dask cluster 
+   * buffer ( the amount of partitions ) is set at total number of cores / 2
+   * the dask cluster is local only 
+
 
 

@@ -1,6 +1,7 @@
 
 # Make Requests Fast
-  This is a project used to test different libraries for parallelizing I/O tasks with python single node machine
+  This project is used to explore and test different libraries for parallelizing I/O tasks with a single machine.  
+  There is a list of websites, each used as a target for a simple get request.  The default number of requests is 150 requests, as there are 150 different websites.  
 
 
 ## Install Poetry

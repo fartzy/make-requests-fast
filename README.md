@@ -7,7 +7,17 @@
 ## Install Poetry
 This project uses Poetry version 1.1.0rc1.  The latest at this time is 1.1.3 so just use that.
    > pip install --user poetry
+   > 
    > poetry self update 1.1.3
+
+Also, make sure that you update your shell startup file is updated.  I am using zsh, and oh-my-zsh, so these are the commands to update my `~/.zshrc`. 
+   > poetry completions zsh > ~/.zfunc/_poetry
+   > 
+   > mkdir $ZSH_CUSTOM/plugins/poetry
+   > 
+   > poetry completions zsh > $ZSH_CUSTOM/plugins/poetry/_poetry
+
+Check out the poetry doc for other shell helpers. [Poetry shell helpers](https://python-poetry.org/docs/#enable-tab-completion-for-bash-fish-or-zsh). Of course you should restart your shell or source the startup file after the modifications.
 
 Poetry is a tool that makes dependency managmeent cleaner and packaging easier.  [Poetry documentation](https://python-poetry.org/docs/)
 

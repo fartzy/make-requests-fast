@@ -26,8 +26,8 @@ Poetry is a tool that makes dependency managmeent cleaner and packaging easier. 
 Download the code from Github and then use poetry to install the dependencies on your machine
    > git clone https://github.com/fartzy/make-requests-fast.git
 
-Create a new python environment with Poetry for this project 
-   > poetry env use 3.8
+Create a new python environment with Poetry for this project . Im using python 3.9 ( this is June 2021 ). 
+   > poetry env use 3.9
 
 Install the dependencies for this project using Poetry 
    > poetry install 
